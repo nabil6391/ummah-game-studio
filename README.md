@@ -1,6 +1,6 @@
 # ummah.games — website
 
-Marketing site for the [Ummah Games Kit](https://github.com/OWNER/ummah-games-kit):
+Marketing site for the [Ummah Games Kit](https://github.com/nabil6391/ummah-games-kit):
 halal-first game development agents and Defold workflows for Muslim game studios.
 
 Static HTML/CSS/JS — **no build step, no framework, no dependencies**. Deployed to
