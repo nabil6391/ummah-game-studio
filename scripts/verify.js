@@ -111,9 +111,16 @@ if (fs.existsSync(path.join(ROOT, 'sitemap.xml'))) {
 
 /* ---- assets referenced by the page exist ---- */
 
-const localRefs = [...html.matchAll(/(?:href|src)="(\/[^"]+)"/g)]
-  .map((m) => m[1])
-  .filter((p) => !p.startsWith('//'));
+/* Root-relative paths ("/assets/x") 404 when the site is served from a
+   subpath such as user.github.io/repo/. Pages deploys exactly that way, so
+   local refs must be relative. This check caught a real production outage. */
+const rootRelative = [...html.matchAll(/(?:href|src)="(\/[^\/"][^"]*)"/g)].map((m) => m[1]);
+check('no root-relative local asset paths',
+  rootRelative.length === 0,
+  rootRelative.join(', ') + ' — breaks under a subpath deploy');
+
+const localRefs = [...html.matchAll(/(?:href|src)="(?!https?:|\/\/|#|mailto:)([^"]+)"/g)]
+  .map((m) => m[1].replace(/^\//, ''));
 
 const missing = localRefs.filter((p) => !fs.existsSync(path.join(ROOT, p)));
 check('all local assets referenced by index.html exist',
